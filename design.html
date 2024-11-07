@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Analog and Digital Clock</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body setup for a sleek, high-end background */
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            color: #fff;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Floating particles background (creates a modern feel) */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/white-linen.png');
+            animation: particlesAnimation 30s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes particlesAnimation {
+            0% {
+                transform: translateX(0) translateY(0);
+            }
+            100% {
+                transform: translateX(200px) translateY(200px);
+            }
+        }
+
+        /* Clock container */
+        .clock-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* Digital Clock */
+        .digital-clock {
+            font-size: 4rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            margin-bottom: 50px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+            font-family: 'Orbitron', sans-serif;
+            display: block;
+            animation: digitalClockAnim 1s ease-in-out infinite;
+        }
+
+        /* Digital clock animation */
+        @keyframes digitalClockAnim {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Analog clock container */
+        .analog-clock {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            border: 10px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+        }
+
+        /* Clock hands */
+        .hour, .minute, .second {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: 50% 100%;
+            transform: rotate(90deg);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .hour {
+            width: 10px;
+            height: 90px;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        .minute {
+            width: 6px;
+            height: 120px;
+            background-color: #fff;
+            border-radius: 3px;
+        }
+
+        .second {
+            width: 2px;
+            height: 140px;
+            background-color: #ff6f61;
+            border-radius: 2px;
+        }
+
+        /* Center point of the clock */
+        .center-dot {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: #fff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            margin-left: -7.5px;
+            margin-top: -7.5px;
+        }
+
+        /* Clock Marks */
+        .mark {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #fff;
+            border-radius: 50%;
+        }
+
+        .mark:nth-child(1) {
+            top: 10px;
+            left: 50%;
+            margin-left: -4px;
+        }
+
+        .mark:nth-child(2) {
+            top: 50%;
+            left: 5px;
+            margin-top: -4px;
+        }
+
+        .mark:nth-child(3) {
+            top: 50%;
+            right: 5px;
+            margin-top: -4px;
+        }
+
+        .mark:nth-child(4) {
+            bottom: 10px;
+            left: 50%;
+            margin-left: -4px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Particle background -->
+    <div class="particles"></div>
+
+    <!-- Clock container -->
+    <div class="clock-container">
+
+        <!-- Digital Clock -->
+        <div class="digital-clock" id="digital-clock"></div>
+
+        <!-- Analog Clock -->
+        <div class="analog-clock">
+            <div class="center-dot"></div>
+            <div class="hour" id="hour-hand"></div>
+            <div class="minute" id="minute-hand"></div>
+            <div class="second" id="second-hand"></div>
+            <div class="mark"></div>
+            <div class="mark"></div>
+            <div class="mark"></div>
+            <div class="mark"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // Digital Clock
+        function updateDigitalClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('digital-clock').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        // Analog Clock
+        function updateAnalogClock() {
+            const now = new Date();
+            const hours = now.getHours() % 12; // Convert to 12-hour format
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            const hourDeg = (hours * 30) + (minutes / 60) * 30; // 30 degrees per hour
+            const minuteDeg = (minutes * 6) + (seconds / 60) * 6; // 6 degrees per minute
+            const secondDeg = seconds * 6; // 6 degrees per second
+
+            // Update clock hands based on calculated rotation
+            document.getElementById('hour-hand').style.transform = `rotate(${90 + hourDeg}deg)`;
+            document.getElementById('minute-hand').style.transform = `rotate(${90 + minuteDeg}deg)`;
+            document.getElementById('second-hand').style.transform = `rotate(${90 + secondDeg}deg)`;
+        }
+
+        // Initialize the clocks
+        function initClocks() {
+            updateDigitalClock();
+            updateAnalogClock();
+            setInterval(updateDigitalClock, 1000);
+            setInterval(updateAnalogClock, 1000);
+        }
+
+        initClocks(); // Start the clocks
+    </script>
+
+</body>
+</html>
